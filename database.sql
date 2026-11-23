@@ -1,0 +1,36 @@
+CREATE DATABASE IF NOT EXISTS ride_tracker CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE ride_tracker;
+
+CREATE TABLE IF NOT EXISTS users (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ name VARCHAR(100) NOT NULL,
+ email VARCHAR(150) NOT NULL UNIQUE,
+ username VARCHAR(80) NOT NULL UNIQUE,
+ password VARCHAR(255) NOT NULL,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS income (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ user_id INT NOT NULL,
+ platform ENUM('Rapido','Zomato','Swiggy','Uber') NOT NULL,
+ rides INT NOT NULL DEFAULT 0,
+ amount DECIMAL(12,2) NOT NULL,
+ income_date DATE NOT NULL,
+ notes VARCHAR(255) DEFAULT NULL,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+ INDEX(user_id), INDEX(income_date), INDEX(platform)
+);
+
+CREATE TABLE IF NOT EXISTS expenses (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ user_id INT NOT NULL,
+ category ENUM('Petrol','Home') NOT NULL,
+ amount DECIMAL(12,2) NOT NULL,
+ expense_date DATE NOT NULL,
+ description VARCHAR(255) DEFAULT NULL,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+ INDEX(user_id), INDEX(expense_date), INDEX(category)
+);
